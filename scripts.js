@@ -1,45 +1,32 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const bouncingText = document.querySelector('.bouncing-text');
+const canvas = document.getElementById('mandalaCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-    bouncingText.addEventListener('mouseover', function() {
-        bouncingText.style.animationPlayState = 'paused';
-    });
+function drawMandala() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    bouncingText.addEventListener('mouseout', function() {
-        bouncingText.style.animationPlayState = 'running';
-    });
+    const width = canvas.width;
+    const height = canvas.height;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
-    // Fractal Tree Script
-    const canvas = document.getElementById('myCanvas');
-    const ctx = canvas.getContext('2d');
+    for (let i = 0; i < 360; i += 15) {
+        const angle = i * Math.PI / 180;
+        const x = centerX + 100 * Math.cos(angle);
+        const y = centerY + 100 * Math.sin(angle);
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight / 2;
-
-    function draw(startX, startY, len, angle, branchWidth, color1, color2) {
         ctx.beginPath();
-        ctx.save();
-        ctx.strokeStyle = color1;
-        ctx.fillStyle = color2;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-        ctx.lineWidth = branchWidth;
-        ctx.translate(startX, startY);
-        ctx.rotate(angle * Math.PI / 180);
-        ctx.moveTo(0, 0);
-        ctx.lineTo(0, -len);
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = `hsl(${i}, 100%, 50%)`;
         ctx.stroke();
-
-        if (len < 10) {
-            ctx.restore();
-            return;
-        }
-
-        draw(0, -len, len * 0.8, angle - 15, branchWidth * 0.8, color1, color2);
-        draw(0, -len, len * 0.8, angle + 15, branchWidth * 0.8, color1, color2);
-
-        ctx.restore();
     }
+}
 
-    draw(canvas.width / 2, canvas.height, 120, 0, 10, 'green', 'green');
-});
+function animateMandala() {
+    drawMandala();
+    requestAnimationFrame(animateMandala);
+}
+
+animateMandala();
